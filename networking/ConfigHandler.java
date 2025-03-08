@@ -6,6 +6,14 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+/**
+ * Written by John Caceres
+ * Class reads the config file upon creating an instance and stores socket
+ * info for each node in two arrays.
+ * Methods are provided to get the number of nodes, the InetAddress
+ * associated with a node, and the port number associated with a node.
+ */
+
 public class ConfigHandler {
     private int numOfNodes;
     private int[] portNumbers;
@@ -41,6 +49,8 @@ public class ConfigHandler {
         return numOfNodes;
     }
 
+    // The following two methods can yield an ArrayIndexOutOfBoundsException
+    // if nodeNumber > numOfNodes.
     public int getPortNumber(int nodeNumber) {
         return portNumbers[nodeNumber - 1];
     }
