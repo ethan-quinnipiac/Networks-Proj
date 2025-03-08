@@ -42,6 +42,7 @@ public class Client {
                 //create a DatagramPacket with the serialized packet
                 DatagramPacket datagramPacket = new DatagramPacket(packetBytes, packetBytes.length, address, 9876);
                 socket.send(datagramPacket);
+                System.out.println("Sent");
                 
             } catch (IOException e) {
                 e.printStackTrace();
