@@ -25,6 +25,8 @@ public class Server {
     public void receive() {
         while (true) { //server will keep listening for packets until it is stopped
             try {
+                System.out.println("...");
+
                 DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
                 socket.receive(datagramPacket);
 
@@ -58,6 +60,7 @@ public class Server {
     public static void main(String[] args) throws SocketException {
         DatagramSocket socket = new DatagramSocket(9876);
         Server server = new Server(socket);
+        System.out.println("Server started");
         server.receive();
     }
 }
