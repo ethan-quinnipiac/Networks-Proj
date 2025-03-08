@@ -7,6 +7,8 @@ import java.io.ObjectOutputStream;
 import java.net.SocketException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /*
  * Ethan Lanier
@@ -28,7 +30,7 @@ public class Client {
         while(true) {
             try {
                 //create a packet object
-                packet packetToSend = new packet("1.0", 5, new String[]{"flag1", "flag2"}, null, null);
+                HACPacket packetToSend = new HACPacket(1, 1, new ArrayList<String>(Arrays.asList("file1", "file2", "file3")));
                 
                 //serialize the packet object to a byte array
                 ByteArrayOutputStream byteStream = new ByteArrayOutputStream();

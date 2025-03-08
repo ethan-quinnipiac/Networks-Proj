@@ -30,10 +30,10 @@ public class Server {
                 DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
                 socket.receive(datagramPacket);
 
-                //deserialize the packet object from the received datagramPacket
+                //deserialize the HACPacket object from the received datagramPacket
                 ByteArrayInputStream byteStream = new ByteArrayInputStream(datagramPacket.getData());
                 ObjectInputStream objStream = new ObjectInputStream(byteStream);
-                packet receivedPacket = (packet) objStream.readObject();
+                HACPacket receivedPacket = (HACPacket) objStream.readObject();
                 System.out.println("Packet received: " + receivedPacket);
 
             } catch (IOException | ClassNotFoundException e) {
