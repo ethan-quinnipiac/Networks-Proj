@@ -84,8 +84,6 @@ public class HACProgram {
                 System.out.println("Beginning server protocol.");
                 // TODO Fill in server behavior
             }
-
-
         }
     }
 }
