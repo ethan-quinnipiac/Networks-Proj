@@ -43,7 +43,9 @@ public class HACProgram {
             input.close();
             System.out.println("P2P mode selected.");
             System.out.println("Beginning P2P protocol.");
-            Establisher.peerToPeer(1, new ConfigHandler()); //start peer to peer
+            System.out.println("Enter node number: ");
+            int nodeNumber = input.nextInt();
+            Establisher.peerToPeer(nodeNumber, new ConfigHandler()); //start peer to peer
         }
         else {
             ArrayList<String> acceptedClient = new ArrayList<>();
