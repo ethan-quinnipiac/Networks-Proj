@@ -58,6 +58,7 @@ public class HACProgram {
             // TODO Fill in P2P behavior
         }
         else {
+            System.out.println("C-S mode selected.");
             // Non-client node
             if (thisNodeNumber != ConfigHandler.SERVER_NODE_NUMBER) {
                 // Close input and start client process
