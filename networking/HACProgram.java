@@ -55,7 +55,7 @@ public class HACProgram {
             input.close();
             System.out.println("P2P mode selected.");
             System.out.println("Beginning P2P program.");
-            // TODO Fill in P2P behavior
+            Establisher.peerToPeer(thisNodeNumber, CONFIG_HANDLER);
         }
         else {
             System.out.println("C-S mode selected.");
@@ -65,14 +65,14 @@ public class HACProgram {
                 input.close();
                 System.out.println("Client node detected.");
                 System.out.println("Beginning client program.");
-                // TODO Fill in client behavior
+                Establisher.Client(thisNodeNumber, CONFIG_HANDLER);
             }
             else {
                 // Close input and start server process
                 input.close();
                 System.out.println("Server node detected.");
                 System.out.println("Beginning server program.");
-                // TODO Fill in server behavior
+                Establisher.Server(thisNodeNumber, CONFIG_HANDLER);
             }
         }
     }
