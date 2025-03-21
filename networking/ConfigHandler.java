@@ -15,6 +15,7 @@ import java.util.Scanner;
  */
 
 public class ConfigHandler {
+    public static final int SERVER_NODE_NUMBER = 1;
     private int numOfNodes;
     private int[] portNumbers;
     private InetAddress[] addresses;

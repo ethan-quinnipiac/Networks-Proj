@@ -4,8 +4,11 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class HACProgram {
-    
+    public static final ConfigHandler CONFIG_HANDLER = new ConfigHandler();
+
     public static void main(String[] args) {
+        // Setup nodeNumber
+        int thisNodeNumber;
         
         Scanner input = new Scanner(System.in);
 
@@ -27,6 +30,15 @@ public class HACProgram {
         acceptedCS.add("cS");
         acceptedCS.add("cs");
 
+        System.out.println("Please enter this node's ID# (1-" + CONFIG_HANDLER.getNumOfNodes() + "). If server node, please enter " + 
+                                        ConfigHandler.SERVER_NODE_NUMBER + ":");
+        thisNodeNumber = input.nextInt();
+        while (thisNodeNumber > CONFIG_HANDLER.getNumOfNodes() || thisNodeNumber < 1) {
+            System.out.println("ERROR: Node ID# out of range. Please enter an ID# from 1-" + CONFIG_HANDLER.getNumOfNodes() + ":");
+            thisNodeNumber = input.nextInt();
+        }
+        input.nextLine();
+
         System.out.println("What mode would you like to run?");
         System.out.println("Type:   P2P     C-S");
         currentInput = input.nextLine();
@@ -42,46 +54,23 @@ public class HACProgram {
             // Close input and start p2p process
             input.close();
             System.out.println("P2P mode selected.");
-            System.out.println("Beginning P2P protocol.");
+            System.out.println("Beginning P2P program.");
             // TODO Fill in P2P behavior
         }
         else {
-            ArrayList<String> acceptedClient = new ArrayList<>();
-            acceptedClient.add("Client");
-            acceptedClient.add("client");
-            acceptedClient.add("C");
-            acceptedClient.add("c");
-
-            ArrayList<String> acceptedServer = new ArrayList<>();
-            acceptedServer.add("Server");
-            acceptedServer.add("server");
-            acceptedServer.add("S");
-            acceptedServer.add("s");
-
-            System.out.println("C-S mode selected.");
-            System.out.println("Client or server?");
-            System.out.println("Type: Client     Server");
-            currentInput = input.nextLine();
-
-            // Check that input matches client or server
-            while (!(acceptedClient.contains(currentInput) || acceptedServer.contains(currentInput))) {
-                System.out.println("Unknown mode requested. Please type one of the following:");
-                System.out.println("Client     Server");
-                currentInput = input.nextLine();
-            }
-
-            if (acceptedClient.contains(currentInput)) {
+            // Non-client node
+            if (thisNodeNumber != ConfigHandler.SERVER_NODE_NUMBER) {
                 // Close input and start client process
                 input.close();
-                System.out.println("Client mode selected.");
-                System.out.println("Beginning client protocol.");
+                System.out.println("Client node detected.");
+                System.out.println("Beginning client program.");
                 // TODO Fill in client behavior
             }
             else {
                 // Close input and start server process
                 input.close();
-                System.out.println("Server mode selected.");
-                System.out.println("Beginning server protocol.");
+                System.out.println("Server node detected.");
+                System.out.println("Beginning server program.");
                 // TODO Fill in server behavior
             }
         }
