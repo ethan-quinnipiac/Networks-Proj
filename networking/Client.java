@@ -27,41 +27,36 @@ public class Client {
     }
 
     public void send() { //send a packet to the server
-        while(true) {
-            try {
-                //create a packet object
-                HACPacket packetToSend = new HACPacket(1, 1, new ArrayList<String>(Arrays.asList("file1", "file2", "file3")));
+        try {
+            //create a packet object
+            HACPacket packetToSend = new HACPacket(1, 1, new ArrayList<String>(Arrays.asList("file1", "file2", "file3")));
                 
-                //serialize the packet object to a byte array
-                ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-                ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
-                objStream.writeObject(packetToSend);
-                objStream.flush();
-                byte[] packetBytes = byteStream.toByteArray();
+            //serialize the packet object to a byte array
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+            ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
+            objStream.writeObject(packetToSend);
+            objStream.flush();
+            byte[] packetBytes = byteStream.toByteArray();
                 
-                //create a DatagramPacket with the serialized packet
-                DatagramPacket datagramPacket = new DatagramPacket(packetBytes, packetBytes.length, address, 9876);
-                socket.send(datagramPacket);
-                System.out.println("Sent");
+            //create a DatagramPacket with the serialized packet
+            DatagramPacket datagramPacket = new DatagramPacket(packetBytes, packetBytes.length, address, 9876);
+            socket.send(datagramPacket);
+            System.out.println("Sent");
                 
-            } catch (IOException e) {
-                e.printStackTrace();
-                break;
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     public void receive() throws IOException {
-        while(true) {
-            try {
-                DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
-                socket.receive(datagramPacket);
-                String fromServer = new String(datagramPacket.getData(), 0, datagramPacket.getLength());
-                System.out.println("Server: " + fromServer);
-            } catch (IOException e) {
-                e.printStackTrace();
-                break;
-            }
+        try {
+            System.out.println("Listening...");
+            DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
+            socket.receive(datagramPacket);
+            String fromServer = new String(datagramPacket.getData(), 0, datagramPacket.getLength());
+            System.out.println("Server: " + fromServer);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -69,8 +64,12 @@ public class Client {
         DatagramSocket socket = new DatagramSocket();
         InetAddress address = InetAddress.getByName("localhost");
         Client client = new Client(socket, address);
+
         System.out.println("client start");
-        client.send();
-        client.receive();
+        while(true) {
+            client.send();
+            client.receive();
+        }
+        
     }
 }

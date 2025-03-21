@@ -22,26 +22,28 @@ public class Server {
         this.socket = socket;
     }
 
-    public ClientData receive() {
+    public void receive() {
         while (true) { //server will keep listening for packets until it is stopped
             try {
                 System.out.println("...");
 
                 DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
                 socket.receive(datagramPacket);
-                ClientData clientData = new ClientData(datagramPacket.getPort(), datagramPacket.getAddress());
 
                 //deserialize the HACPacket object from the received datagramPacket
                 ByteArrayInputStream byteStream = new ByteArrayInputStream(datagramPacket.getData());
                 ObjectInputStream objStream = new ObjectInputStream(byteStream);
                 HACPacket receivedPacket = (HACPacket) objStream.readObject();
+
+                //print details of the packet
                 System.out.println("Packet received: " + receivedPacket);
                 System.out.println("Node number: " + receivedPacket.getNodeNumber());
                 System.out.println("Sequence number: " + receivedPacket.getSequenceNumber());
                 System.out.println("Files: " + receivedPacket.getFiles());
-                System.out.println("Port #" + clientData.getPort());
+                System.out.println("Port #" + datagramPacket.getPort());
                 System.out.println("-------------------");
-                return clientData;
+
+                send(datagramPacket.getAddress(), datagramPacket.getPort());
 
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -50,18 +52,15 @@ public class Server {
 
     }
 
-    public void send(ClientData clientData) { //respond to client
-        while (true) {
-            try {
-                int port = clientData.getPort();
-                buffer = "nice".getBytes();
-                InetAddress address = clientData.getAddress();
-                DatagramPacket response = new DatagramPacket(buffer, buffer.length, address, port);
-                socket.send(response);
-            } catch (IOException e) {
-                e.printStackTrace();
-                break;
-            }
+    public void send(InetAddress clientAddress, int clientPort) { //respond to client
+        try {
+            byte[] responseBuffer = new byte[1024]; //buffer for the response
+            responseBuffer = "nice".getBytes();
+            DatagramPacket response = new DatagramPacket(responseBuffer, responseBuffer.length, clientAddress, clientPort);
+            socket.send(response);
+            System.out.println("Response Sent...");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -69,7 +68,6 @@ public class Server {
         DatagramSocket socket = new DatagramSocket(9876);
         Server server = new Server(socket);
         System.out.println("Server started");
-        ClientData clientData = server.receive();
-        server.send(clientData);
+        server.receive();
     }
 }
