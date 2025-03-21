@@ -1,8 +1,10 @@
 package networking;
 
 import java.net.DatagramPacket;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.SocketException;
 import java.net.DatagramSocket;
@@ -48,13 +50,18 @@ public class Client {
         }
     }
 
-    public void receive() throws IOException {
+    public void receive() {
         try {
-            System.out.println("Listening...");
+            byte[] buffer = new byte[4096]; // Increase buffer size for larger packets
             DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
             socket.receive(datagramPacket);
-            String fromServer = new String(datagramPacket.getData(), 0, datagramPacket.getLength());
-            System.out.println("Server: " + fromServer);
+
+            // Deserialize the HACPacket
+            HACPacket receivedPacket = deserializeHACPacket(datagramPacket.getData());
+            System.out.println("Response from server:");
+            System.out.println("Node Number: " + receivedPacket.getNodeNumber());
+            System.out.println("Sequence Number: " + receivedPacket.getSequenceNumber());
+            System.out.println("Files: " + receivedPacket.getFiles());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,4 +79,29 @@ public class Client {
         }
         
     }
+
+    private static HACPacket deserializeHACPacket(byte[] data) {
+            try {
+            ByteArrayInputStream byteStream = new ByteArrayInputStream(data);
+            ObjectInputStream objStream = new ObjectInputStream(byteStream);
+            return (HACPacket) objStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
+
+/*
+ * public void receive() throws IOException {
+        try {
+            System.out.println("Listening...");
+            DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
+            socket.receive(datagramPacket);
+            String fromServer = new String(datagramPacket.getData(), 0, datagramPacket.getLength());
+            System.out.println("Server: " + fromServer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+ */

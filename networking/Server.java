@@ -5,8 +5,10 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /*
  * Ethan Lanier
@@ -43,7 +45,7 @@ public class Server {
                 System.out.println("Port #" + datagramPacket.getPort());
                 System.out.println("-------------------");
 
-                send(datagramPacket.getAddress(), datagramPacket.getPort());
+                send(datagramPacket.getAddress(), datagramPacket.getPort(), receivedPacket);
 
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -52,7 +54,39 @@ public class Server {
 
     }
 
-    public void send(InetAddress clientAddress, int clientPort) { //respond to client
+    public void send(InetAddress clientAddress, int clientPort, HACPacket packetToSend) {
+        try {
+            // Serialize the HACPacket
+            byte[] data = serializeHACPacket(packetToSend);
+
+            // Create and send a DatagramPacket
+            DatagramPacket response = new DatagramPacket(data, data.length, clientAddress, clientPort);
+            socket.send(response);
+            System.out.println("Response HACPacket sent to client.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private byte[] serializeHACPacket(HACPacket packet) throws IOException {
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
+        objStream.writeObject(packet);
+        objStream.flush();
+        return byteStream.toByteArray();
+    }
+
+    public static void main(String[] args) throws SocketException {
+        DatagramSocket socket = new DatagramSocket(9876);
+        Server server = new Server(socket);
+        System.out.println("Server started");
+        server.receive();
+    }
+}
+
+
+/*
+ * public void send(InetAddress clientAddress, int clientPort) { //respond to client
         try {
             byte[] responseBuffer = new byte[1024]; //buffer for the response
             responseBuffer = "nice".getBytes();
@@ -63,11 +97,4 @@ public class Server {
             e.printStackTrace();
         }
     }
-
-    public static void main(String[] args) throws SocketException {
-        DatagramSocket socket = new DatagramSocket(9876);
-        Server server = new Server(socket);
-        System.out.println("Server started");
-        server.receive();
-    }
-}
+ */

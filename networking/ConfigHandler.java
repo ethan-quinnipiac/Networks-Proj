@@ -21,7 +21,7 @@ public class ConfigHandler {
     private InetAddress[] addresses;
 
     public ConfigHandler() {
-        File configFile = new File(".\\networking\\config.txt");
+        File configFile = new File("/Users/ethanlanier/Desktop/CSC340/Networks-Proj/networking/config.txt");
 
         try {
             Scanner reader = new Scanner(configFile);
